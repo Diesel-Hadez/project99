@@ -46,15 +46,7 @@ async def counter(websocket, path):
     try:
         await websocket.send(state_event())
         async for message in websocket:
-            data = json.loads(message)
-            if data["action"] == "minus":
-                STATE["value"] -= 1
-                await notify_state()
-            elif data["action"] == "plus":
-                STATE["value"] += 1
-                await notify_state()
-            else:
-                logging.error("unsupported event: {}", data)
+            await asyncio.wait([user.send(message) for user in USERS])
     finally:
         await unregister(websocket)
 
