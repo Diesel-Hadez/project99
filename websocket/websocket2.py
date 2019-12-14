@@ -14,11 +14,6 @@ USERS = set()
 async def register(websockets):
     USERS2.append({"socket": websockets, "username": "John Doe"})
 
-
-async def unregister(websockets):
-    USERS2 = [user for user in USERS2 if user ["socket"] != websockets]
-    await notify_users()
-
 async def counter(websockets, path):
     print(type(websockets))
     await register(websockets)
