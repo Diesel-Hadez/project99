@@ -29,11 +29,12 @@ async def counter(websockets, path):
             print("{}", message)
             if json1_data["password"] == "12345":
                 await asyncio.wait([user["socket"].send(message)for user in USERS2])
+            for mod in USERS2:
+                if mod["password"] == "54321":
+                    await asyncio.wait(mod.send(message))
+
             if json1_data["type"] == "question":
                 await asyncio.wait([user["socket"].send(message) for user in USERS2])
-
-
-
 
 
     finally:
