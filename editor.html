@@ -3,6 +3,22 @@
 	<head>
 		<title>Project 99</title>
 		<link rel="stylesheet" href="node_modules/trumbowyg/dist/ui/trumbowyg.min.css">
+	<script>
+		document.onload = function() {
+			var oldText = '';
+			window.setInterval(function () {
+				if ($('#test').trumbowyg('html') != oldText) {
+					oldText = $('#test').trumbowyg('html');
+					serverSocket.send(oldText);
+				}
+			});
+			var serverSocket = new WebSocket("ws://192.168.0.1:8765"); 
+			serverSocket.onmessage = function (event) {
+				$('#test').trumbowyg('html', event.data);
+			}
+		};
+	</script>
+
 	</head>
 	<body>
 		<h1>Initial Demo</h1>
