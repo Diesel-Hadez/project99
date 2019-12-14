@@ -46,7 +46,7 @@ async def counter(websockets, path):
                     await asyncio.wait([user["socket"].send(message) for user in USERS2 if user ["mod"] == "true"])
             if json1_data["type"] == "drawbox":
                 if sender_user["mod"] == "teacher":
-                    await asyncio.wait([user["socket"].send(message) for user in USERS2])
+                    await asyncio.wait([user["socket"].send(message) for user in USERS2] if user["mod"] != "teacher")
     finally:
         await unregister(websockets)
 
