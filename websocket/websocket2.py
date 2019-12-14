@@ -46,7 +46,7 @@ async def counter(websocket, path):
     try:
         await websocket.send(state_event())
         async for message in websocket:
-            await asyncio.wait([user.send(message) for user in USERS])
+            await asyncio.wait([user.send(message) for user in USERS if user != websocket])
     finally:
         await unregister(websocket)
 
