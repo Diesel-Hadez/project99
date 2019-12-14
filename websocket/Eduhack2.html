@@ -6,6 +6,18 @@
     <title>Project 66</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+	<script>
+		function expand_menu() {
+			let expanded = document.getElementById("navbarBasicExample").classList.contains("is-active");
+			if (expanded) {
+				document.getElementById("navbarBasicExample").classList.remove("is-active");
+			}
+			else {
+				document.getElementById("navbarBasicExample").classList.add("is-active");
+
+			}
+		}
+	</script>
   </head>
   <body>
   <section class="section">
@@ -16,6 +28,7 @@
       </h1>
 	  <p class="subtitle">
 		We're pleased to see you 
+	<div class="navbar-brand">
 	  <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
       <a class="navbar-item">
@@ -62,6 +75,12 @@
       </div>
     </div>
   </div>
+    <a onclick="expand_menu()" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+	  <span aria-hidden="true"></span>
+	  <span aria-hidden="true"></span>
+	  <span aria-hidden="true"></span>
+	</a>
+	</div>
 </nav>
    
 	   Project 66 aims to serve as a plaform <br>
