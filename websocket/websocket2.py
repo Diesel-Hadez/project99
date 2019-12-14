@@ -25,18 +25,26 @@ async def counter(websockets, path):
     try:
         async for message in websockets:
             json1_data = json.loads(message)
-
+            sender_user = None
+            
+            for user in USERS2:
+                if user["socket"] == websockets:
+                    sender_user = user
+            if sender_user is None:
+                continue;
+            
             print("{}", message)
             if json1_data["password"] == "12345":
                 await asyncio.wait([user["socket"].send(message)for user in USERS2])
             if json1_data["password"] == "54321":
-                print("Right password")
-                for user in USERS2:
-                    if user["socket"] == websockets:
-                        print["EUREKA"]
-                        user["mod"] = "true"
+                sender_user["mod"] = "true"
             if json1_data["type"] == "question":
-                await asyncio.wait([user["socket"].send(message) for user in USERS2 if user ["mod"] == "true"])
+                #send to all
+                if sender_user["mod"] == "true":
+                    await asyncio.wait([user["socket"].send(message) for user in USERS2)
+                #send to mod for approval
+                else:
+                    await asyncio.wait([user["socket"].send(message) for user in USERS2 if user ["mod"] == "true"])
 
 
     finally:
