@@ -3,52 +3,41 @@ import json
 import logging
 import websockets
 
+
 logging.basicConfig()
 
 STATE = {"value": 0}
 
+USERS2 = []
 USERS = set()
 
-
-def state_event():
-    return json.dumps({"type": "state", **STATE})
-
-
-def users_event():
-    return json.dumps({"type": "users", "count": len(USERS)})
+async def register(websockets):
+    USERS2.append({"socket": websockets, "username": "John Doe"})
 
 
-async def notify_state():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = state_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-
-async def notify_users():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = users_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-
-async def register(websocket):
-    USERS.add(websocket)
+async def unregister(websockets):
+    USERS2 = [user for user in USERS2 if user ["socket"] != websockets]
     await notify_users()
 
-
-async def unregister(websocket):
-    USERS.remove(websocket)
-    await notify_users()
-
-
-async def counter(websocket, path):
-    # register(websocket) sends user_event() to websocket
-    await register(websocket)
+async def counter(websockets, path):
+    print(type(websockets))
+    await register(websockets)
     try:
-        await websocket.send(state_event())
-        async for message in websocket:
-            await asyncio.wait([user.send(message) for user in USERS if user != websocket])
+        async for message in websockets:
+            json1_data = json.loads(message)
+
+            print("{}", message)
+            if json1_data["password"] == "12345":
+                await asyncio.wait([user["socket"].send(message)for user in USERS2])
+            if json1_data["type"] == "question":
+                await asyncio.wait([user["socket"].send(message) for user in USERS2])
+
+
+
+
+
     finally:
-        await unregister(websocket)
+        await unregister(websockets)
 
 
 start_server = websockets.serve(counter, "localhost", 6789)
