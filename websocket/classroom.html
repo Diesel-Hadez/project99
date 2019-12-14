@@ -15,6 +15,10 @@ h1, h2, h3, h4, h5, h6 {
 		<link rel="stylesheet" href="node_modules/trumbowyg/dist/ui/trumbowyg.min.css">
 	<script>
 		var serverSocket = new WebSocket("ws://127.0.0.1:6789");
+                function approve(banana){
+			let toSend = { message: banana.innerText, type: "question", password: ''};
+			serverSocket.send(JSON.stringify(toSend));
+		}
 		window.onload = function(){
 			var userpass = prompt("Enter password: ");
 			var oldText = '';
@@ -44,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
 				console.log(event.data);
 				received = JSON.parse(event.data);
 				if (received.type == "question") {
-					$('#qlist').append("<li>" + received.message + "</li>");
+					$('#qlist').append("<li onclick='approve(this)'>" + received.message + "</li>");
 					return;
 				}
 				else if (received.type == "board") {
@@ -98,6 +102,7 @@ h1, h2, h3, h4, h5, h6 {
 				ctx.closePath();
 			}
 			function GetPos(event) {
+			canvBoundRect = canvas.getBoundingClientRect();
 				return {x: event.clientX - canvBoundRect.left,
 				y: event.clientY - canvBoundRect.top};
 			}
