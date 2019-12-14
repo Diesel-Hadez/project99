@@ -1,24 +1,36 @@
 <!DOCTYPE HTML5> 
 <html>
 	<head>
-		<title>Project 99</title>
+		<title>Project 66</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="node_modules/trumbowyg/dist/trumbowyg.min.js"></script>
 		<link rel="stylesheet" href="node_modules/trumbowyg/dist/ui/trumbowyg.min.css">
 	<script>
+			var userpass = prompt("Enter password: ");
 			var oldText = '';
 			window.setInterval(function () {
 				if ($('#test').trumbowyg('html') != oldText) {
 					oldText = $('#test').trumbowyg('html');
-					serverSocket.send(oldText);
+					let toSend = { message: oldText, type: "board", password: userpass }
+					serverSocket.send(JSON.stringify(toSend));
 				}
 			}, 200);
 			var serverSocket = new WebSocket("ws://127.0.0.1:6789"); 
 			serverSocket.onmessage = function (event) {
-				if (event.data == oldText)
-					return;
-				$('#test').trumbowyg('html', event.data);
 				console.log(event.data);
+				received = JSON.parse(event.data)
+				if (received.type == "question") {
+					$('qlist').append("<li>" + received.message + "</li>");
+					return;
+				}
+				if (received.message == oldText)
+					return;
+				$('#test').trumbowyg('html', received.message);
+			}
+			function send_question() {
+				let question = prompt("Ask a question");
+				let toSend = {message: question, type: "question"};
+				serverSocket.send(JSON.stringify(toSend))
 			}
 	</script>
 
@@ -26,6 +38,10 @@
 	<body>
 		<h1>Initial Demo</h1>
 		<div id="test"></div>
+		<a onclick="send_question()">Ask a question!</a>
+		<h2>Question List</h2>
+		<ul id= "qlist">
+		</ul>
 	<script>
 		$('#test').trumbowyg();
 	</script>
