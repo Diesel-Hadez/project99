@@ -16,11 +16,14 @@ h1, h2, h3, h4, h5, h6 {
 	<script>
 		var serverSocket = new WebSocket("ws://127.0.0.1:6789");
                 function approve(banana){
-			let toSend = { message: banana.innerText, type: "question", password: ''};
+			let toSend = { message: banana.innerText, type: "realquestion", password: ''};
 			serverSocket.send(JSON.stringify(toSend));
 		}
+		var userpass = '';
+		function ask_userpass() {
+			userpass = prompt("Enter password: ");
+		}
 		window.onload = function(){
-			var userpass = prompt("Enter password: ");
 			var oldText = '';
 			window.setInterval(function () {
 				//If the text in the box has been updated
@@ -49,6 +52,13 @@ h1, h2, h3, h4, h5, h6 {
 				received = JSON.parse(event.data);
 				if (received.type == "question") {
 					$('#qlist').append("<li onclick='approve(this)'>" + received.message + "</li>");
+					return;
+				}
+				else if (received.type == "realquestion") {
+					$('#qtons').append(`
+					<div class="notification">
+					` + received.message + `
+</div>`);
 					return;
 				}
 				else if (received.type == "board") {
@@ -209,22 +219,17 @@ h1, h2, h3, h4, h5, h6 {
 	  <span aria-hidden="true"></span>
 	</a>
 	</div>
-      <p class="subtitle">
-		We're pleased to see you 
-      </p>
-      <p>
-	   Project 66 aims to serve as a plaform <br>
-	   where teachers and students alike can <br>
-	   gather and discuss as a class, paving <br>
-	   the way to new discoveries.
-      </p>
+	<a class="button is-primary" onclick="ask_userpass()">I'm A Teacher/Monitor!</a>
 
 		<h1>Initial Demo</h1>
 		<div id="test"></div>
 		<a onclick="send_question()">Ask a question!</a>
 		<h2>Question List</h2>
+		<div id="qtons">
+		</div>
 		<ul id= "qlist">
 		</ul>
+		<h2>Drawbox</h2>
 		<canvas id="canvasTest" width=500 height=500></canvas>
     </div>
   </section>
