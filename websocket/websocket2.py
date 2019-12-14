@@ -6,8 +6,6 @@ import websockets
 
 logging.basicConfig()
 
-STATE = {"value": 0}
-
 USERS2 = []
 USERS = set()
 
@@ -35,6 +33,7 @@ async def counter(websockets, path):
             
             print("{}", message)
             if json1_data["password"] == "12345":
+                sender_user["mod"] = "teacher"
                 await asyncio.wait([user["socket"].send(message)for user in USERS2])
             if json1_data["password"] == "54321":
                 sender_user["mod"] = "true"
@@ -45,8 +44,9 @@ async def counter(websockets, path):
                 #send to mod for approval
                 else:
                     await asyncio.wait([user["socket"].send(message) for user in USERS2 if user ["mod"] == "true"])
-
-
+            if json1_data["type"] == "drawbox":
+                if sender_user["mod"] == "teacher":
+                    await asyncio.wait([user["socket"].send(message) for user in USERS2])
     finally:
         await unregister(websockets)
 
