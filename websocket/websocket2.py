@@ -12,7 +12,12 @@ USERS2 = []
 USERS = set()
 
 async def register(websockets):
-    USERS2.append({"socket": websockets, "username": "John Doe"})
+    USERS2.append({"socket": websockets, "mod": "false"})
+
+async def unregister(websockets):
+    temp = [user for user in USERS2 if user ["socket"] != websockets]
+    USERS2 = temp
+    await notify_users()
 
 async def counter(websockets, path):
     print(type(websockets))
@@ -24,12 +29,14 @@ async def counter(websockets, path):
             print("{}", message)
             if json1_data["password"] == "12345":
                 await asyncio.wait([user["socket"].send(message)for user in USERS2])
-            for mod in USERS2:
-                if mod["password"] == "54321":
-                    await asyncio.wait(mod.send(message))
-
+            if json1_data["password"] == "54321":
+                print("Right password")
+                for user in USERS2:
+                    if user["socket"] == websockets:
+                        print["EUREKA"]
+                        user["mod"] = "true"
             if json1_data["type"] == "question":
-                await asyncio.wait([user["socket"].send(message) for user in USERS2])
+                await asyncio.wait([user["socket"].send(message) for user in USERS2 if user ["mod"] == "true"])
 
 
     finally:
