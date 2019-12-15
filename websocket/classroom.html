@@ -22,6 +22,9 @@ h1, h2, h3, h4, h5, h6 {
 		var userpass = '';
 		function ask_userpass() {
 			userpass = prompt("Enter password: ");
+			let toSend = { message: "Registration", type: "register", password: userpass };
+			serverSocket.send(JSON.stringify(toSend));
+
 		}
 		window.onload = function(){
 			var oldText = '';
