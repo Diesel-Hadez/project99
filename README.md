@@ -1,7 +1,7 @@
 # project99
 A note-taking, question anonymised question asking web framework for Teachers and students.
 
-##Requirements and dependencies
+## Requirements and dependencies
 Requires Python3.8, the websockets python library (`pip install websockets`)
 
 This application utilises bulma.io for CSS styles, and the trumbowyg library for the text editor.
